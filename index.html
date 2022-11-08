@@ -47,7 +47,13 @@
                     var messages = document.getElementById('messages'),
                         message = document.createElement('li'),
                         code = document.createElement('code')
-                        content = document.createTextNode(e.data);
+                        
+                    
+                        var originalMsg = e.data;
+                        console.log(originalMsg);
+                        var msg = JSON.parse(originalMsg)["content"]["message"];
+                        content = document.createTextNode(msg );
+
                     code.appendChild(content)
                     message.appendChild(code);
                     messages.appendChild(message);
