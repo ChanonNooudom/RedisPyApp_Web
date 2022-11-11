@@ -19,18 +19,19 @@
 
         <label>Message</label>
         <div id="msg_form">
-            <form id="frm">
+            <form id="frm" method="POST">
                 <input type="text" id="my-message" name="myInput">
-            
-                <input type="hidden" name="isButtonPressed" value="true">
+                <input type="text" id="sss" name="sss">
+                <!-- <input type="hidden" name="isButtonPressed" value="true"> -->
                 <input class="btn btn-info" type="submit">
             </form>
         </div>
 
-
+        <div id="aaaaaa"></div>
         
         <h2>Received messages</h2>
         <ol id='messages'></ol>
+        
         <p>... waiting for messages</p>
 
         <script>
@@ -53,6 +54,15 @@
                         console.log(originalMsg);
                         var msg = JSON.parse(originalMsg)["content"]["message"];
                         content = document.createTextNode(msg );
+
+                    var aaaaaa = document.getElementById("aaaaaa");
+                    if (msg != undefined) {
+                        aaaaaa.innerHTML = msg;
+                    }
+                    else {
+                        aaaaaa.innerHTML = "";
+                    }
+                    
 
                     code.appendChild(content)
                     message.appendChild(code);

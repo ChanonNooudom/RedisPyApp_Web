@@ -17,12 +17,12 @@ class web_server(BaseHTTPRequestHandler):
             self.send_response(302)
             self.send_header('Location', "index.html")
 
-        if self.path.find("isButtonPressed=true") != -1:
+        # if self.path.find("isButtonPressed=true") != -1:
             
-            parsed_url = urlparse(self.path)
-            m = parse_qs(parsed_url.query)['myInput'][0]
-            Publish(m)
-            print("Button clicked")
+        #     parsed_url = urlparse(self.path)
+        #     m = parse_qs(parsed_url.query)['myInput'][0]
+        #     Publish(m)
+        #     print("Button clicked")
 
         self.end_headers()
         
@@ -31,6 +31,28 @@ class web_server(BaseHTTPRequestHandler):
             result = db_helper.ReadDb()
             table = db_helper.GenerateTable(result)
             self.wfile.write(bytes(table, 'utf-8'))
+
+    def do_POST(self):
+        # print(self)
+
+        content_length = int(self.headers.get('Content-Length', 0))
+        config_string = self.rfile.read(content_length).decode("UTF-8")
+        parms = config_string.split("&")
+        for key in parms:
+            keyDict = key.split("=")
+            print(keyDict[1])
+
+
+        # self.send_response(301)
+        # self.path = "/index.html"
+        # file_to_open = open(self.path[1:]).read()
+        
+        self.send_response(301)
+        self.send_header('Location','/index.html')
+        self.end_headers()
+
+        # self.wfile.write( bytes( "<h1>sss</h1>", "utf-8"))
+
 
 
 def Publish(m):
