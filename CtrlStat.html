@@ -1,0 +1,739 @@
+
+
+<html>
+<html lang="en">
+<head>
+<title>Control Status</title>
+
+<meta charset="UTF-8">
+<meta http-equiv="x-ua-compatible" content="IE=11">
+<meta name="author" content="R&D Department : PlanetComm">
+<script src= "http://code.jquery.com/jquery-1.9.1.min.js" ></script>
+<!-- <script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script> -->
+
+<script type=text/javascript>
+
+    var MS_MNU=0;
+    const Normal="Limegreen";
+    const StandBy="Orange";
+    const Fault="Red";
+    // window.onload=function () {
+    //     refresh();
+    //     addEvent(window, "keydown", disableF5);
+    // };
+    // window.onunload=function () {
+    //     if(MS_MNU==0){CtrlStat_onclick();}
+    // };
+    // function disableF5(e) { if ((e.which || e.keyCode) == 116) e.preventDefault(); };
+    // function refresh() {
+    //     myVar = setInterval(CtrlStat_onclick, 15000);
+    // }
+    function addEvent(element, eventName, callback) {
+        if (element.addEventListener) {
+            element.addEventListener(eventName, callback, false);
+        } else if (element.attachEvent) {
+            element.attachEvent("on" + eventName, callback);
+        }
+    }
+
+    function id(i){return document.getElementById(i);}
+
+    
+    function CtrlStat_onclick(){
+        MS_MNU=1;
+        var e=id("MF1_MMsg");
+        e.value="@"+id("M_S").value+"XXX#";
+        id("MF1").submit();
+    }
+    function EventLog_onclick(){
+        MS_MNU=2;
+        var e=id("MF2_MMsg");
+        e.value="@"+id("M_S").value+"XXX#";
+        id("MF2").submit();     
+    }
+    function Config_onclick(){
+        MS_MNU=3;
+        var e=id("MF3_MMsg");
+        e.value="@"+id("M_S").value+"XXX#";
+        id("MF3").submit(); 
+    }
+    function Contact_onclick(){
+        MS_MNU=4;
+        var e=id("MF4_MMsg");
+        e.value="@"+id("M_S").value+"XXX#";
+        id("MF4").submit(); 
+    }
+    function SetCursor(CurStyle,MyID){
+        var i,MSty;
+        switch(CurStyle){
+            case 0 : MSty="auto"; break;
+            case 1 : MSty="crosshair"; break;
+            case 2 : MSty="default"; break;
+            case 3 : MSty="hand"; break;
+            case 4 : MSty="move"; break;
+            case 5 : MSty="text"; break;
+            case 6 : MSty="wait"; break;
+        }
+        var elem=id(MyID);
+        elem.style.cursor="hand";
+    }
+    function Local_D_onmouseover(){SetCursor(3,"Local_D");}
+    function Remote_D_onmouseover(){SetCursor(3,"Remote_D");}
+    function Auto_D_onmouseover(){SetCursor(3,"Auto_D");}
+    function Unit1_D_onmouseover(){SetCursor(3,"Unit1_D");}
+    function Unit2_D_onmouseover(){SetCursor(3,"Unit2_D");} 
+    function confirmMsg(msg){return "Do you want to select "+msg+"  OK/Cancel?";}
+   
+// Remote LED button
+    var Rflag = 1;
+    function Remote_D_onclick(){
+        var Remote_D=id("Remote_D");
+        if(confirm(confirmMsg("Remote Mode"))==true){
+            if(Rflag== 1)
+            {
+                Remote_D.src='/media/SW_Y_B.gif';
+                Local_D.src='/media/SW_Y_D.gif';
+                Auto_D.src ='/media/SW_Y_D.gif';
+                Rflag = 0;
+            
+            }
+        
+        else {
+                Remote_D.src='/media/SW_Y_B.gif';
+                Local_D.src='/media/SW_Y_D.gif';
+                Auto_D.src ='/media/SW_Y_D.gif';
+                Rflag = 1; 
+            }
+        }
+    }        
+    
+    function Local_D_onclick(){
+        var Local_D=id("Local_D");
+        if(confirm(confirmMsg("Local Mode"))==true){
+            var e=id("MF1_MMsg");
+            Local_D.src='/media/SW_Y_B.gif';
+            e.value="@"+id("M_S").value+"RL1#";
+        }
+
+        else Local_D.src='/media/SW_Y_D.gif';
+             Remote_D.src='/media/SW_Y_D.gif';
+    }
+
+
+    // Auto functions 
+    //  Auto LED web
+
+
+    // var Flag = true;
+    // function Auto_D_onclick(){
+    //     var Auto_D=id("Auto_D");
+    //     var ledAlarm = false;
+
+    //     if(confirm(confirmMsg("Auto Mode"))==true){
+
+    //         if (Flag == 1)
+    //         {   
+    //             Auto_D.src ='/media/SW_Y_B.gif';
+    //             Remote_D.src ='/media/SW_Y_D.gif';
+    //             Local_D.src ='/media/SW_Y_B.gif';
+    //             Flag = 0;
+    //             console.log(Flag);
+    //         }
+    //         else {
+    //             Auto_D.src ='/media/SW_Y_D.gif';
+    //             Remote_D.src ='/media/SW_Y_D.gif';
+    //             Local_D.src ='/media/SW_Y_B.gif';
+    //             Flag = 1;
+    //             console.log(Flag); 
+    //         }
+        
+       
+            
+    //     }
+        
+    // }
+
+//////////////////////////////////
+
+
+// For Auto_D_onclick 
+// check    from  database  Center Currnet ( ccu1      ccu2) and Alarm Status ( almtwu1    almtwu2 ) 
+// check    from U-art  Actual Current (LNX1 min, LNX1 mid, LNX1 max) and (LNX2 min, LNX2 mid, LNX2 max)
+
+
+// Auto  On / Off led Auto_D display for web 
+//       On / off led Auto_D in i2c
+//         change the led 1 and 2 both web and i2c
+
+
+
+//////////////////////////
+// Mode-Auto # From Web    
+/////////////////////////
+
+    let auto_webstatus
+    
+    function Auto_D_onclick(data) {
+        var Auto_D=id("Auto_D");
+
+        if(confirm(confirmMsg("auto# Mode"))==true){
+            if(auto_webstatus == 0){
+                auto_webstatus = 1
+                Auto_D.src ='/media/SW_Y_B.gif';
+                Remote_D.src ='/media/SW_Y_D.gif';
+                Local_D.src ='/media/SW_Y_B.gif';
+            
+            }else {
+                auto_webstatus = 0
+                Auto_D.src ='/media/SW_Y_D.gif';
+                Remote_D.src ='/media/SW_Y_D.gif';
+                Local_D.src ='/media/SW_Y_B.gif';
+            }
+            $.getJSON('/pi/_auto_web',{auto_status: auto_webstatus}, function (auto) {
+                console.log("auto_status: ", auto.autoLed) // autoLed is ftom Mode-Auto on/off for button 
+               
+            });
+        }   
+    };
+////////////////////////
+//// Mode-Auto # Button 
+///////////////////////
+
+    let aled_status   
+    
+    function aledButton(){
+        $.getJSON('/pi/_auto_led', function(aaa) {
+            // autoLeds()
+            aled_status = aaa.autoled
+            // console.log("aled button",aled_status) 
+            aled_status2 = aaa.a3
+            // console.log("aled button2",aled_status2) 
+            if(aled_status == 1){
+                Auto_D.src ='/media/SW_Y_B.gif';
+                Remote_D.src ='/media/SW_Y_D.gif';
+                Local_D.src ='/media/SW_Y_B.gif';
+            
+            }
+            else {
+                Auto_D.src ='/media/SW_Y_D.gif';
+        //         Remote_D.src ='/media/SW_Y_D.gif';
+        //         Local_D.src ='/media/SW_Y_B.gif';
+           
+
+        }
+    });
+}
+
+
+///////////////////////    
+//  LED#1 && 2  #Button
+///////////////////////
+
+    let led1_status, led2_status
+ 
+    
+    function detectLeds(){
+        $.getJSON('/pi/_detect_leds', function(res) {
+            //views.autoLeds()
+            led1_status = res.led1
+            console.log("Button 1 led=",led1_status)
+            led2_status = res.led2
+            console.log("Button 2 led=",led2_status)
+            if(led1_status == 1){
+                Led1_st.src='/media/LED_G_B.gif';
+                Led2_st.src='/media/LED_Y_B.gif';
+                Unit1_D.src='/media/SW_Y_B.gif';
+                Unit2_D.src='/media/SW_Y_D.gif';  
+                R_SW1.src='/media/LNX_ONL.gif';
+                R_SW2.src='/media/LNX_STB.gif';
+                Auto_D.src ='/media/SW_Y_D.gif';
+                WG_Line1.style.borderColor="limegreen";
+                WG_Line2.style.borderColor="orange";
+               
+
+            }
+            
+            if(led2_status == 1){
+                Led2_st.src='/media/LED_G_B.gif';
+                Led1_st.src='/media/LED_Y_B.gif';
+                Unit1_D.src='/media/SW_Y_D.gif';
+                Unit2_D.src='/media/SW_Y_B.gif';
+                R_SW1.src='/media/LNX_STB.gif';
+                R_SW2.src='/media/LNX_ONL.gif';
+                Auto_D.src ='/media/SW_Y_D.gif';
+                WG_Line1.style.borderColor="orange";
+                WG_Line2.style.borderColor="Limegreen";
+              
+            }
+            // Temp Disable for i2c  when 0 
+            // if(led1_status == 0 && led2_status == 0){
+            //     Led2_st.src='/media/LED_R_B.gif';
+            //     Led1_st.src='/media/LED_R_B.gif';
+            //     Unit1_D.src='/media/SW_Y_D.gif';
+            //     Unit2_D.src='/media/SW_Y_D.gif';
+            //     WG_Line1.style.borderColor="red";
+            //     WG_Line2.style.borderColor="red";
+            // }
+
+
+
+
+            
+            
+        })
+    }
+
+///////////////////////////////
+// aledButton()   
+// To get task from the bottons 
+///////////////////////////////
+
+    detectLeds()
+    setInterval(() => {
+        // detectLeds()
+        aledButton()
+        
+    }, 500);
+
+///////////////////////////////
+    //  LED#1  # From Web 
+///////////////////////////////
+    function Unit1_D_onclick(data) {
+        var Unit1_D=id("Unit1_D");
+        if(confirm(confirmMsg("Unit#1 on"))==true){
+            if(led1_status == 0){
+                led1_status = 1
+                Auto_D.src ='/media/SW_Y_D.gif';
+                Local_D.src='/media/SW_Y_B.gif';
+                Led1_st.src='/media/LED_G_B.gif';
+                Led2_st.src='/media/LED_Y_B.gif';
+                Unit1_D.src='/media/SW_Y_B.gif';
+                Unit2_D.src='/media/SW_Y_D.gif';  
+                R_SW1.src='/media/LNX_ONL.gif';
+                R_SW2.src='/media/LNX_STB.gif';
+                WG_Line1.style.borderColor="limegreen";
+                WG_Line2.style.borderColor="orange";
+            }else {
+                led1_status = 0
+            }
+            $.getJSON('/pi/_unit1_button',{status: led1_status}, function (res) {
+                detectLeds()
+                console.log("led1 status: ", res.led1)
+            });
+        }
+    };
+
+/////////////////////////
+    //  LED#2  # From Web
+/////////////////////////
+
+    function Unit2_D_onclick(data) {
+        var Unit2_D=id("Unit2_D");
+        if(confirm(confirmMsg("Unit#2 on"))==true){
+            if(led2_status == 0){
+                led2_status = 1
+                Auto_D.src ='/media/SW_Y_D.gif';
+                Local_D.src='/media/SW_Y_B.gif';
+                Led2_st.src='/media/LED_G_B.gif';
+                Led1_st.src='/media/LED_Y_B.gif';
+                Unit1_D.src='/media/SW_Y_D.gif';
+                Unit2_D.src='/media/SW_Y_B.gif';
+                R_SW1.src='/media/LNX_STB.gif';
+                R_SW2.src='/media/LNX_ONL.gif';
+                WG_Line1.style.borderColor="orange";
+                WG_Line2.style.borderColor="Limegreen";
+            }else {
+                led2_status = 0
+            }
+            $.getJSON('/pi/_unit2_button',{status: led2_status}, function (res) {
+                detectLeds()
+                console.log("led2 status: ", res.led2)
+                console.log("auto:",res.autoled)
+            });
+        }
+    };
+
+
+            
+
+    function WaveGuideFaul(){
+        setLCol(Fault,Fault);
+        id("WG_LL").style.color=Fault;
+        id("WG_LR").style.color=Fault;
+        id("WG_RL").style.color=Fault;
+        id("WG_RR").style.color=Fault;
+    }
+
+    function U1_ONL(){
+        setLCol(Normal,StandBy);
+        var Unit1_D=id("Unit1_D");
+        Unit1_D.src='/media/SW_Y_B.gif';
+    }
+    function U1_OFFL(){
+        setLCol(Normal,StandBy);
+        var Unit1_D=id("Unit1_D");
+        Unit1_D.src='/media/SW_Y_D.gif';
+    }
+    function U2_ONL(){
+        setLCol(Normal,StandBy);
+        var Unit2_D=id("Unit2_D");
+        Unit2_D.src='/media/SW_Y_B.gif';
+    }
+    function U2_OFFL(){
+        setLCol(Normal,StandBy);
+        var Unit2_D=id("Unit2_D");
+        Unit2_D.src='/media/SW_Y_D.gif';
+    }
+
+    
+    function setLCol(c1,c2){
+        var l1=id("WG_Line1");
+        var l2=id("WG_Line2");
+        l1.style.borderColor=c1;
+        l2.style.borderColor=c2;
+    }
+
+    // Testing combination of LED Status + Swith for Unit# 1
+
+
+    function G_SW2() {
+        setLCol(Normal,Normal);
+        var G_SW2=id("G_SW2");
+        var Led2_st=id("Led2_st")
+        var WG_Line2=id("WG_Line2")
+        G_SW2.src='/media/LNX_ONL.gif'
+        Led2_st.src='/media/LED_G_B.gif'
+        WG_Line2.borderColor="blue"
+    }
+
+    
+
+    function Y_sw2() {
+        setLCol(StandBy);
+        var Y_SW2=id("Y_sw2")
+        Y_SW2.src='/media/LNX_STB.gif'        
+    }
+
+    function R_sw2() {
+        setLCol(Fault);
+        var R_SW2=id("R_sw2")
+        R_SW2.src='/media/LNX_FLT.gif'        
+    }
+
+
+    function WG_sw() {
+        var WG_SW = id("WG_SW");
+        var LNX_POL = id("LNX_POL");
+        if(WG_SW.value == "WG_NML.gif"){ 
+        if(LNX_POL.value == "1")
+        {Unit1_D_onclick();} 
+        else{Unit2_D_onclick();}
+
+       }else{ WaveGuideFaul();} 
+    }
+
+
+</script>
+</head>
+<body> 
+<input id="M_S" name="M_S" style="display:none;z-index:100;left:10px;width:978px;position:absolute;top:15px;height:22px" value='<!--#exec cmd="clear_session"-->'> 
+
+<form action="/CtrlStat.html" id="MF1">
+    
+    <textarea class="box" id="MF1_MMsg" style="display:none;left:53px;top:15px" name="message" rows="0">
+</textarea>
+
+<!-- <input type="text" name="LED#1" value="Type as a Test"> -->
+</form> 
+<form action="/EventLog.html" id="MF2">
+    
+    <textarea class="box" id="MF2_MMsg" style="display:none;left:53px;top:15px" name="message" rows="0">
+</textarea>
+</form> 
+<form action="/Config.html" id="MF3">
+    
+    <textarea class="box" id="MF3_MMsg" style="display:none;left:53px;top:15px" name="message" rows="0">
+</textarea>
+</form> 
+<form action="/ContAddr.html" id="MF4">
+    
+    <textarea class="box" id="MF4_MMsg" style="display:none;left:53px;top:15px" name="message" rows="0">
+</textarea>
+</form> 
+<div>
+    <a href="CtrlStat.html">Status</a>
+    <a href="Config.html">Config</a>
+</div>
+
+<table bgColor="steelblue" border="0" cellPadding="1" cellSpacing="1" height="40" style="z-index:100;left:1px;width:800px;position:absolute;top:62px;height:40px"> 
+    <tr>
+         <td> 
+             <table bgColor="steelblue" border="0" cellPadding="1" cellSpacing="1" style="font-weight:normal;z-index:101;left:13px;width:984px;font-style:normal;font-family:sans-serif;position:absolute;top:79px;height:44px" width="100%" height="10">
+            </table> 
+            <img style="z-index:103;left:586px;position:absolute;top:-54px" src="/media/PCA.gif">
+             <!-- start menu --> 
+             <input id="CtrlStat" onclick="CtrlStat_onclick();" style="border-right:medium none;border-top:medium none;font-size:small;z-index:102;left:36px;border-left:medium none;cursor:hand;color:black;border-bottom:medium none;font-style:normal;font-family:sans-serif;position:absolute;top:10px;background-color:aqua;text-align:center" value="CONTROL &amp; STATUS"> 
+             <input id="EventLog" onclick="EventLog_onclick();" style="border-right:medium none;border-top:medium none;font-size:small;z-index:103;left:228px;border-left:medium none;cursor:hand;color:black;border-bottom:medium none;font-style:normal;font-family:sans-serif;position:absolute;top:10px;background-color:lightblue;text-align:center" value="EVENT LOG"> 
+             <input id="Config" onclick="Config_onclick();" style="border-right:medium none;border-top:medium none;font-size:small;z-index:104;left:420px;border-left:medium none;cursor:hand;color:black;border-bottom:medium none;font-style:normal;font-family:sans-serif;position:absolute;top:10px;background-color:lightblue;text-align:center" value="CONFIGURATION">
+
+              <input id="Contact" onclick="Contact_onclick();" style="border-right:medium none;border-top:medium none;font-size:small;z-index:105;left:612px;border-left:medium none;cursor:hand;color:black;border-bottom:medium none;font-style:normal;font-family:sans-serif;position:absolute;top:10px;background-color:lightblue;text-align:center" value="CONTACT ADDRESS">
+               <!-- stop menu -->
+             </td> 
+            </tr> 
+        </table> 
+        <!-- </td></tr></table> --> 
+        <table border="0" cellPadding="1" cellSpacing="1" id="TABLE2" style="z-index:103;left:16px;width:376px;position:absolute;top:108px;height:388px" width="376" height="388"> 
+            <tr> 
+                <td> 
+                    
+                    <!-- <img id="G_SW1" style="z-index:107;left:158px;position:absolute;top:3px" src='/media/LNX_ONL.gif'> -->
+                    <!-- <img id="Y_SW1"style="z-index:107;left:158px;position:absolute;top:3px" src='/media/LNX_STB.gif'> -->
+                    <img id="R_SW1"style="z-index:107;left:158px;position:absolute;top:3px" src='/media/LNX_FLT.gif' >
+                    <!-- <img id="G_SW2" style="z-index:106;left:158px;position:absolute;top:197px" src='/media/LNX_ONL.gif'> -->
+                    <!-- <img id="Y_SW2" style="z-index:106;left:158px;position:absolute;top:197px" src='/media/LNX_STB.gif'> -->
+                    <img id="R_SW2" style="z-index:106;left:158px;position:absolute;top:197px" src='/media/LNX_FLT.gif'>
+                    <img style="z-index:110;left:36px;position:absolute;top:141px" src='/media/WG_NML.gif'> 
+                    <img style="z-index:110;left:280px;position:absolute;top:141px" src='/media/WG_NML.gif'> 
+                    <table border="0" cellPadding="1" cellSpacing="1" style="z-index:107;left:164px;position:absolute;top:245px" width="75"> 
+                        <tr><td><p align="left" style="font-size:x-small;font-family:sans-serif">&nbsp;U2= 
+                                <p style="font-size:x-small;font-family:sans-serif" id= 'u1_msg2'></p>
+                        </p>
+                    </td>
+                </tr>
+                 <tr>
+                     <td>
+                         <p align="left" style="font-size:x-small;font-family:sans-serif">&nbsp;
+                            <!--#echo var="lnx_actual2"-->mA
+                        </p>
+                    </td>
+                </tr>
+             </table>
+              <table border="0" cellPadding="1" cellSpacing="1" style="font-size:xx-small;z-index:107;left:164px;font-family:sans-serif;position:absolute;top:50px" width="75">
+                 <tr>
+                     <td>
+                         <p align="left" style="font-size:x-small;font-family:sans-serif">&nbsp;U1=
+                            <p id= 'u1_msg'></p>
+                            <!-- <text id="app2">{{Test_data}}</text> -->
+                        </p>
+                    </td>
+                </tr> 
+                <tr>
+                    <td>
+                        <p align="left" style="font-size:x-small;font-family:sans-serif">&nbsp;<!--#echo var="lnx_actual1"-->mA
+                        </p>
+                    </td>
+                </tr> 
+            </table> 
+            <table style="z-index:110;left:48px;width:273px;color:white;position:absolute;top:334px;height:26px" height="26" cellSpacing="1" cellPadding="1" width="273" border="0"> 
+                <tr>
+                    <td>
+                        <p style="font-weight:normal;color:black;font-family:sans-serif" align="center">1:1 REDUNDANT LNx SYSTEM
+                        </p>
+                    </td>
+                </tr> 
+            </table>
+<table style="font-weight:normal;font-size:small;z-index:105;left:62px;width:248px;font-family:sans-serif;position:absolute;top:64px;height:103px;border-bottom-style:none" cellSpacing="0" cellPadding="0" width="248" border="3" id="WG_Line1" borderColor="red"> <tr><td><p align="left">&nbsp;</p></td></tr></table> 
+<table style="font-weight:normal;font-size:small;z-index:105;left:62px;width:248px;border-top-style:none;font-family:sans-serif;position:absolute;top:159px;height:102px" cellSpacing="0" cellPadding="0" width="248" border="3" id="WG_Line2" borderColor="red"> <tr><td><p align="left">&nbsp;</p></td></tr></table> 
+<table style="font-weight:normal;font-size:small;z-index:105;left:77px;width:212px;font-family:sans-serif;position:absolute;top:154px" cellSpacing="1" cellPadding="1" width="212" border="0" bgColor="white"> <tr><td><p align="left">&nbsp;</p></td></tr> </table> 
+<hr style="z-index:105;left:90px;width:30px;position:absolute;top:154px;height:5px;background-color:orange" size="5" id="WG_LR"> 
+<hr style="z-index:110;left:251px;width:30px;position:absolute;top:154px;height:5px;background-color:orange" size="5" id="WG_RL"> 
+<hr style="z-index:105;left:6px;width:30px;position:absolute;top:154px;height:5px;background-color:limegreen" size="5" id="WG_LL"> 
+<hr style="z-index:105;left:335px;width:30px;position:absolute;top:154px;height:5px;background-color:limegreen" size="5" id="WG_RR"> 
+<input id="LNX_POL" style="z-index:102;left:7px;visibility:hidden;width:65px;position:absolute;top:363px;height:20px" value='{echo var="lnx_pole"}'> 
+<table id="TABLE4" style="z-index:110;left:3px;width:29px;color:white;position:absolute;top:132px;height:26px" height="26" cellSpacing="1" cellPadding="1" width="29" border="0"><tr><td><p style="font-weight:normal;color:black;font-family:sans-serif" align="center">I/P</p></td></tr></table>
+<table id="TABLE4" style="z-index:110;left:336px;width:29px;color:white;position:absolute;top:132px;height:26px" height="26" cellSpacing="1" cellPadding="1" width="29" border="0"> <tr><td><p style="font-weight:normal;color:black;font-family:sans-serif" align="center">O/P</p></td></tr></table></td></tr></table>
+<input id="WG_SW" style="z-index:102;left:7px;visibility:hidden;width:65px;position:absolute;top:363px;height:20px" value='<!--#echo var="wg"-->'><!-- </td></tr></table></td></tr></table>--> 
+ 
+
+
+
+<!-- old script here-->
+ <table id="TABLE1" style="z-index:105;left:397px;width:400px;position:absolute;top:112px;height:148px" height="148" cellSpacing="1" cellPadding="1" width="400" border="1">
+    <tr>
+        <td>&nbsp;
+            <table id="TABLE1" style="z-index:105;left:121px;width:272px;position:absolute;top:92px;height:49px" height="49" cellSpacing="1" cellPadding="1" width="272" border="1">
+                <tr>
+                    <td>&nbsp;&nbsp; 
+                        <table style="z-index:110;left:-1px;width:273px;color:white;position:absolute;top:-24px;height:26px" height="26" cellSpacing="1" cellPadding="1" width="273" bgColor="darkcyan" border="0">
+                            <tr>
+                                <td>
+                                    <p style="font-weight:normal;font-family:sans-serif" align="center">MANUAL</p>
+                                </td>
+                            </tr>
+                        </table> 
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        
+                        <img id="Unit1_D" onclick="Unit1_D_onclick();" onmouseover="Unit1_D_onmouseover();" style="z-index:107;left:16px;position:absolute;top:4px" src='/media/SW_Y_D.gif'><table style="font-weight:normal;font-size:small;z-index:105;left:58px;width:75px;font-family:sans-serif;position:absolute;top:14px" cellSpacing="1" cellPadding="1" width="75" border="0"> <tr><td><p align="left">UNIT#1</p></td></tr></table> 
+                        
+                        <img id="Unit2_D" onclick="Unit2_D_onclick();" onmouseover="Unit2_D_onmouseover();" style="z-index:107;left:142px;position:absolute;top:5px" src='/media/SW_Y_D.gif'><table style="font-weight:normal;font-size:small;z-index:105;left:184px;width:75px;font-family:sans-serif;position:absolute;top:14px" cellSpacing="1" cellPadding="1" width="75" border="0"> <tr><td><p align="left">UNIT#2</p></td></tr> </table> </td> </tr> </table> 
+                        
+                        <img id="Remote_D" onclick="Remote_D_onclick();" onmouseover="Remote_D_onmouseover();" style="z-index:107;left:23px;position:absolute;top:27px" src='/media/SW_Y_D.gif'> 
+                        
+                        <img id="Local_D" onclick="Local_D_onclick();" onmouseover="Local_D_onmouseover();" style="z-index:107;left:265px;position:absolute;top:27px" src='/media/SW_Y_D.gif'> 
+                        
+                        <table id="TABLE1" style="z-index:105;left:6px;width:111px;position:absolute;top:92px;height:49px" height="49" cellSpacing="1" cellPadding="1" width="111" border="1"> 
+                            <tr> 
+                                <td>
+                                    &nbsp;&nbsp; 
+                                    <table style="z-index:110;left:-1px;width:112px;color:white;position:absolute;top:-24px;height:26px" height="26" cellSpacing="1" cellPadding="1" width="112" bgColor="darkcyan" border="0"> 
+                                        <tr>
+                                            <td>
+                                                <p style="font-weight:normal;font-family:sans-serif" align="center">AUTO</p>
+                                            </td>
+                                        </tr>
+                                    </table>&nbsp;&nbsp;&nbsp;&nbsp; 
+                                    
+                                    <img id="Auto_D" onclick="Auto_D_onclick();" onmouseover="Auto_D_onmouseover();" style="z-index:107;left:16px;position:absolute;top:4px" src='/media/SW_Y_B.gif'> <table style="font-weight:normal;font-size:small;z-index:105;left:58px;width:75px;font-family:sans-serif;position:absolute;top:14px" cellSpacing="1" cellPadding="1" width="75" border="0"> 
+                                    
+                                        <tr>
+                                        <td>
+                                            <p align="left">AUTO
+                                                
+                                            </p>
+                                        </td>
+                                    </tr> 
+                </table>
+             </td>
+             </tr>
+             </table>
+              <table style="font-weight:normal;font-size:small;z-index:105;left:64px;width:198px;font-family:sans-serif;position:absolute;top:26px;height:22px" cellSpacing="1" cellPadding="1" width="198" border="0" id="TABLE3"> <tr><td><p align="left">REMOTE PARALLEL&nbsp;I/O INTERFACE
+
+                    </p>
+                </td>
+            </tr> 
+        </table> 
+        <table style="font-weight:normal;font-size:small;z-index:105;left:306px;width:75px;font-family:sans-serif;position:absolute;top:36px" cellSpacing="1" cellPadding="1" width="75" border="0"> <tr><td><p align="left" >LOCAL</p></td></tr> </table> <table style="z-index:107;left:0px;width:400px;color:white;position:absolute;top:-7px;height:30px" height="30" cellSpacing="1" cellPadding="1" width="400" bgColor="darkcyan" border="0"> <tr><td><p style="font-weight:normal;font-family:sans-serif" align="center">CONTROL
+                    </p>
+                </td>
+            </tr> 
+        </table> 
+    </td> 
+</tr> 
+</table> 
+<table border="1" cellPadding="1" cellSpacing="1" height="150" style="z-index:105;left:396px;width:400px;position:absolute;top:301px;height:195px" width="400"> 
+    <tr> 
+        <td> 
+            <table style="z-index:107;left:0px;width:400px;color:white;position:absolute;top:-26px;height:30px" height="30" cellSpacing="1" cellPadding="1" width="400" bgColor="steelblue" border="0"> <tr><td><p style="font-weight:normal;font-family:sans-serif" align="center">SYSTEM STATUS
+            </p>
+        </td>
+    </tr> 
+</table> 
+
+<table border="0" cellPadding="1" cellSpacing="1" style="font-weight:normal;font-size:small;z-index:105;left:100px;width:289px;font-family:sans-serif;position:absolute;top:9px;height:22px" width="289"> 
+    <tr>
+        <td><p align="left" style="left:100px">UNIT #1 STATUS</p></td>
+    </tr>
+</table>
+
+<table border="0" cellPadding="1" cellSpacing="1" style="font-weight:normal;font-size:small;z-index:105;left:100px;width:289px;font-family:sans-serif;position:absolute;top:45px;height:22px" width="289"> 
+    <tr><td><p align="left">UNIT #2 STATUS</p></td></tr> </table> <table border="0" cellPadding="1" cellSpacing="1" style="font-weight:normal;font-size:small;z-index:105;left:100px;width:290px;font-family:sans-serif;position:absolute;top:81px;height:22px" width="290"> <tr><td><p align=left>POWER SUPPLY #1 STATUS</p></td></tr> </table> <table border="0" cellPadding="1" cellSpacing="1" style="font-weight:normal;font-size:small;z-index:105;left:100px;width:289px;font-family:sans-serif;position:absolute;top:118px;height:26px" width="289"> <tr><td><p align="left">POWER SUPPLY #2 STATUS</p></td></tr> </table> <table border="0" cellPadding="1" cellSpacing="1" style="font-weight:normal;font-size:small;z-index:105;left:100px;width:287px;font-family:sans-serif;position:absolute;top:156px;height:22px" width="287"> <tr><td><p align="left">WAVEGUIDE STATUS</p></td></tr> 
+</table> 
+
+
+<!--  This is for le d  -->
+<img id="Led1_st" style="z-index:107;left:65px;position:absolute;top:4px" src='/media/LED_R_B.gif'>
+<img id="Led2_st"style="z-index:107;left:65px;position:absolute;top:39px" src='/media/LED_R_B.gif'> 
+<img id="PowerSub1_st"style="z-index:107;left:65px;position:absolute;top:76px" src='/media/LED_G_B.gif'> 
+<img id="PowerSub2_st"style="z-index:107;left:65px;position:absolute;top:114px" src='/media/LED_G_B.gif'> 
+<img id="WaveG_st"style="z-index:107;left:65px;position:absolute;top:151px" src='/media/LED_G_B.gif'></td> </tr> </table> 
+<table style="font-size:xx-small;z-index:110;left:17px;width:779px;color:red;position:absolute;top:510px;height:26px" height="26" cellSpacing="1" cellPadding="1" width="779" border="0"><tr><td><p align="left" style="font-weight:normal;color:red;font-family:sans-serif">Note:Communications via this embedded web-server interface are considered 'LOCAL' control and not remote.</p></td></tr></table> 
+
+
+<td border="0" cellpadding="1" cellspacing="1" height="50" width="80" style="text-align: center; font-weight: bold;">
+<!-- <button id = 'testb'>{{test_data}}</button> -->
+<!-- <button id="messages"></button> -->
+
+<!--  old Script but working 
+<script>
+       
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+    //    + '/ws/'
+    //    + roomName
+        + '/'
+    ); 
+
+    chatSocket.onmessage = function(event){
+        var data = JSON.parse(event.data);
+        console.log(data);
+        document.querySelector('#app').innerText = data.message; 
+        document.querySelector('#app2').innerText = data.bmessage; 
+        
+    }
+
+
+
+</script> 
+ -->
+ <!-- <input type="text" id='messages'> <size="15">   -->
+ <!-- <ol id='messages'></ol> -->
+
+ <script>
+     
+    function connect () {
+        var ws = new WebSocket("ws://localhost:8766/ws/");
+        ws.onopen = function () {
+            ws.send('SUB channel_b');
+            ws.send('SUB channel_a');
+             //var aaa = ws.send('GET channel_a');
+             //ws.send('GET GET aaa');
+             //console.log(aaa);
+        }
+        ws.onmessage = function (e) {
+            var messages = document.getElementById('messages'),
+                message = document.createElement('li'),
+                code = document.createElement('code')
+                 
+             
+                var originalMsg = e.data;
+                console.log(originalMsg);
+                var msg = JSON.parse(originalMsg)["content"]["message"];
+                content = document.createTextNode(msg);
+
+            //  code.appendChild(content) # show with bullet points
+            //  message.appendChild(code);
+            //  messages.appendChild(message);
+
+            var u1_message = document.getElementById('u1_msg');
+            if (msg != undefined) {
+                u1_message.innerHTML = msg;
+            }
+            else {
+                u1_message.innerHTML = "";
+            }
+
+
+            // var u1_message = document.getElementById('u1_msg2');
+            // if (msg != undefined) {
+            //     u1_message.innerHTML = msg;
+            // }
+            // else {
+            //     u1_message.innerHTML = "";
+            // }
+
+        }
+
+       
+     
+     
+        ws.onclose = function (e) {
+            console.log(e);
+            console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+            setTimeout(function() {
+                 connect();
+            }, 1000);
+        }
+    }
+
+     connect();
+
+  
+     
+ </script>
+
+
+
+<!-- <button>{{buffer}}</button> -->
+ </body>
+ </html>

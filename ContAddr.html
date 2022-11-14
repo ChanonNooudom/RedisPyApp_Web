@@ -1,0 +1,116 @@
+<html>
+<head>
+<title>Contact Address</title>
+<meta charset="UTF-8">
+<meta name="author" content="R&D Department : PlanetComm">
+<script type="text/javascript">
+var MS_MNU=0;
+window.onload=function () {
+    addEvent(window, "keydown", disableF5);
+};
+window.onunload=function () {
+    if(MS_MNU==0){Contact_onclick();}
+};
+function disableF5(e) { if ((e.which || e.keyCode) == 116) e.preventDefault(); };
+function addEvent(element, eventName, callback) {
+    if (element.addEventListener) {
+        element.addEventListener(eventName, callback, false);
+    } else if (element.attachEvent) {
+        element.attachEvent("on" + eventName, callback);
+    }
+}
+function id(i){return document.getElementById(i);}
+function CtrlStat_onclick(){
+    MS_MNU=1;
+    var e=id("MF1_MMsg");
+    e.value="@"+id("M_S").value+"XXX#";
+    id("MF1").submit();
+}
+function EventLog_onclick(){
+    MS_MNU=2;
+    var e=id("MF2_MMsg");
+    e.value="@"+id("M_S").value+"XXX#";
+    id("MF2").submit();     
+}
+function Config_onclick(){
+    MS_MNU=3;
+    var e=id("MF3_MMsg");
+    e.value="@"+id("M_S").value+"XXX#";
+    id("MF3").submit(); 
+}
+function Contact_onclick(){
+    MS_MNU=4;
+    var e=id("MF4_MMsg");
+    e.value="@"+id("M_S").value+"XXX#";
+    id("MF4").submit(); 
+}
+function PCA_Link_onclick(){
+	MS_MNU=5;
+	var e=id("MF5_MMsg");
+    e.value="";
+    id("MF5").submit(); 
+}
+</script>
+</head>
+<body>
+    
+
+<input id="M_S" name="M_S" style="display:none;z-index:100;left:10px;width:978px;position:absolute;top:15px;height:22px" value='<!--#exec cmd="clear_session"-->'> 
+<form action="/CtrlStat.html" id="MF1" >
+    
+    <textarea class="box" id="MF1_MMsg" style="display:none;left:53px;top:15px" name="message" rows="0">
+    </textarea>
+</form> 
+   
+<form action="/EventLog.html" id="MF2">
+    
+    <textarea class="box" id="MF2_MMsg" style="display:none;left:53px;top:15px" name="message" rows="0">
+    </textarea>
+</form> 
+    
+<form action="/Config.html" id="MF3" >
+    
+    <textarea class="box" id="MF3_MMsg" style="display:none;left:53px;top:15px" name="message" rows="0">
+    </textarea>
+</form> 
+   
+<form action="/ContAddr.html" id="MF4" >
+    
+    <textarea class="box" id="MF4_MMsg" style="display:none;left:53px;top:15px" name="message" rows="0">
+    </textarea>
+</form>
+   
+<form action="https://www.planetcomm.com" id="MF5">
+    <textarea class="box" id="MF5_MMsg" style="display:none;left:53px;top:15px" name="message" rows="0">
+    </textarea>
+</form>
+<table bgColor="steelblue" border="0" height="40" style="z-index:100;left:1px;width:800px;position:absolute;top:62px;height:40px">
+	<tr>
+		<td>
+		<table bgColor="steelblue" border="0" style="z-index:101;left:13px;width:984px;position:absolute;top:79px;height:44px" width="100%" height="10"></table>
+		<img src="/media/PCA.gif" style="z-index:103;left:586px;position:absolute;top:-54px"> 
+		<!-- start menu --> <input id="CtrlStat" onclick="CtrlStat_onclick();" style="border-right:medium none;border-top:medium none;font-size:small;z-index:102;left:36px;border-left:medium none;cursor:hand;color:black;border-bottom:medium none;font-style:normal;font-family:sans-serif;position:absolute;top:10px;background-color:lightblue;text-align:center" value="CONTROL &amp; STATUS"> <input id="EventLog" onclick="EventLog_onclick();" style="border-right:medium none;border-top:medium none;font-size:small;z-index:103;left:228px;border-left:medium none;cursor:hand;color:black;border-bottom:medium none;font-style:normal;font-family:sans-serif;position:absolute;top:10px;background-color:lightblue;text-align:center" value="EVENT LOG"> <input id="Config" onclick="Config_onclick();" style="border-right:medium none;border-top:medium none;font-size:small;z-index:104;left:420px;border-left:medium none;cursor:hand;color:black;border-bottom:medium none;font-style:normal;font-family:sans-serif;position:absolute;top:10px;background-color:lightblue;text-align:center" value="CONFIGURATION"> <input id="Contact" onclick="Contact_onclick();" style="border-right:medium none;border-top:medium none;font-size:small;z-index:105;left:612px;border-left:medium none;cursor:hand;color:black;border-bottom:medium none;font-style:normal;font-family:sans-serif;position:absolute;top:10px;background-color:aqua;text-align:center" value="CONTACT ADDRESS"> <!-- stop menu --></td></tr></table><!--/td></tr></table-->
+		<table id="TABLE1" style="z-index:103;left:220px;width:400px;position:absolute;top:140px;height:303px" border="0">
+			<tr>
+				<td>
+					<p><img src="/media/PCA.gif" style="z-index:103;left:-0px;position:absolute;top:-23px"></p>
+					<p><font face="Arial" size="4">&nbsp;</font></p>
+					<p><font face="Arial" size="4">Software GUI Version 2.30, 7 FEB 2017.</font></p>
+					<p><font face="Arial" size="4">Planet Communications Asia Public Co., Ltd</font></p>
+					<p><font face="Arial">157 Soi Ramintra 34, Ramintra Rd,.</font></p>
+					<p><font face="Arial">Tarang, Bangkhen, Bangkok 10230</font></p>
+					<p><font face="Arial">Thailand</font></p>
+                    <p><font face="Arial">Tel: +66(0)2 792 2400</font></p>
+                    <p><font face="Arial">Fax: +66(0)2 792 2499</font></p>
+                    <p style="color:blue"><table id="PCA_Link" onclick="PCA_Link_onclick();" style="z-index:103;cursor:hand;color:blue" border="0"><tr><td><p><font>Website: https://www.planetcomm.com</font></p></td></tr></table></p>
+				</td>
+			</tr>
+		</table>
+</table>
+
+
+
+
+
+</body>
+</html>

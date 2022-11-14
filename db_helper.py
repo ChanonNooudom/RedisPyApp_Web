@@ -1,27 +1,28 @@
 import sqlite3
 import time
 
+
 from redis import Redis
 con = sqlite3.connect("tutorial.db")
 
 
-def CreateDb():
+def CreateTable(query):
     cur = con.cursor()
-    cur.execute("CREATE TABLE movie(title, year, score, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)")
+    cur.execute(query)
 
-def ReadDb():
+def Select(query):
     cur = con.cursor()
-    res = cur.execute("SELECT * FROM movie")
+    res = cur.execute(query)
     return res.fetchall()
 
-def InsertDb(val1, val2, val3):
+def Insert(query, *data):
     cur = con.cursor()
-    cur.execute("INSERT INTO movie (title, year, score) VALUES ( '{}', '{}', '{}' )".format(val1, val2, val3))
+    cur.execute(query.format(data))
     con.commit()
 
-def DeleteDb(key_value):
+def Delete(query):
     cur = con.cursor()
-    cur.execute("DELETE FROM movie ")
+    cur.execute(query)
     con.commit()
 
 def DeleteTable():
@@ -42,8 +43,8 @@ def GenerateTable(data):
     result += "<table>"
     return result
             
-   
- 
+
+
 # DeleteTable()
 #CreateDb()
 # DeleteDb('G')

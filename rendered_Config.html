@@ -1,0 +1,344 @@
+<html>
+
+<head>
+	<title>Configuration</title>
+	<meta charset="UTF-8">
+	<meta name="author" content="R&D Department : PlanetComm">
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+		crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-default shadow-sm ">
+		<div class="container-fluid">
+		  <a class="navbar-brand" href="#"><img src="img/pca_logo.png" width="100"></a>
+		  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		  </button>
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+			  <li class="nav-item">
+				<a class="nav-link " aria-current="page" href="CtrlStat.html">CONTROL & STATUS</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link " aria-current="page" href="EventLog.html">EVENT LOG</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link active" aria-current="page" href="#">CONFIGURATION</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link " aria-current="page" href="ContAddr.html">CONTACT ADDRESS</a>
+			  </li>
+			  
+			</ul>
+			
+		  </div>
+		</div>
+	  </nav>
+
+
+	<div class="container mt-3">
+
+
+
+		<div class="row">
+
+		</div>
+		<div class="row">
+			<div class="col-6">
+				<div class="bg-success text-white fs-4 fw-bold text-center">CONFIGURATION</div>
+				<div>
+
+					<form method="post">
+						<div class="row">
+							<div class="col text-center mt-3 mb-3">
+								<input class="pca-conf btn btn-secondary" type="button" onclick="toggleDisabled('pca-conf')" value="Modify">
+								<input class="pca-conf btn btn-primary" type="submit" value="Submit" disabled>
+							</div>
+						</div>
+
+						<div class="row">
+							<label class="col-6 col-form-label">Output RLY 1 Fault</label>
+							<div class="col-6">
+								<select class="pca-conf form-control" id='RY1_OPT' name='RY1_OPT' disabled>
+									<option selected value></option>
+									<option value='0'>NONE</option>
+									<option value='1'>WG-SW</option>
+									<option value='2'>SUPPLY 1</option>
+									<option value='3'>SUPPLY 2</option>
+									<option value='4'>UNIT 1</option>
+									<option value='5'>UNIT 2</option>
+								</select>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<label class="col-6 col-form-label">Output RLY 2 Fault</label>
+							<div class="col-6">
+								<select class="pca-conf form-control" id='RY2_OPT' name='RY2_OPT' disabled>
+									<option selected value=></option>
+									<option value='0'>NONE</option>
+									<option value='1'>WG-SW</option>
+									<option value='2'>SUPPLY 1</option>
+									<option value='3'>SUPPLY 2</option>
+									<option value='4'>UNIT 1</option>
+									<option value='5'>UNIT 2</option>
+								</select>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<label class="col-6 col-form-label">ALARM</label>
+							<div class="col-6">
+								<select class="pca-conf form-control" id='SND_ONOFF' name='SND_ONOFF' disabled>
+									<option selected value=></option>
+									<option value='1'>ON</option>
+									<option value='0'>OFF</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="row">
+							<label class="col-6 col-form-label">Application ID</label>
+							<div class="col-6">
+								<input class="pca-conf form-control" id='APP_ID' name='APP_ID' value='PlanetComm'
+									disabled>
+							</div>
+						</div>
+						<div class="row">
+							<label class="col-6 col-form-label">Center Current U1:U2</label>
+							
+							<div class="col-3">
+								<input class="form-control" id='LNX1_CUR' name='LNX1_CUR' value='10' disabled>
+							</div>
+							<div class="col-3">
+								<input class="pca-conf form-control" id='LNX2_CUR' name='LNX2_CUR' value='100' disabled>
+								
+							</div>
+							
+						</div>
+						<div class="row">
+							<label class="col-6 col-form-label">Alm Threshold Window U1:U2</label>
+							<div class="col-3">
+								<input class=" form-control" id='OFFSET1_CUR' name='OFFSET1_CUR' value='5'
+									disabled>
+							</div>
+							<div class="col-3">
+								<input class="pca-conf form-control" id='OFFSET2_CUR' name='OFFSET2_CUR' value='25'
+									disabled>
+							</div>
+							
+							
+						</div>
+						<div class="row">
+							<label class="col-6 col-form-label">Actual Current U1:</label>
+							<div class="col-6">
+								<div id= "tee1"></div>
+							</div>
+						</div>
+						<div class="row">
+							<label class="col-6 col-form-label">Actual Current U2:</label>
+							<div class="col-6">
+								<div id= "tee2"></div>
+							</div>
+							
+						</div>
+						<div class="row">
+							<label class="col-6 col-form-label">Selected Range U1 (1/2/3)</label>
+							<div class="col-6">
+								<input class="pca-conf form-control" id='LNX1_RANGE' name='LNX1_RANGE' value='1'
+									disabled>
+							</div>
+						</div>
+						<div class="row">
+							<label class="col-6 col-form-label">Selected Range U2 (1/2/3)</label>
+							<div class="col-6">
+								<input class="pca-conf form-control" id='LNX2_RANGE' name='LNX2_RANGE' value='2'
+									disabled>
+							</div>
+						</div>
+
+
+					</form>
+
+				</div>
+			</div>
+
+
+			<div class="col-6">
+<!-- START NETWORK -->
+				<div class="bg-primary text-white fs-4 fw-bold text-center">NETWORK</div>
+				<div>
+					<form method="post">
+						<div class="row">
+							<div class="row">
+								<label class="col-6 col-form-label">IP Address</label>
+								<div class="col-6">
+									<input class="pca-net form-control" id='IP_ADD' name="IP_ADD" value='ip_addr'
+										disabled>
+								</div>
+							</div>
+							<div class="row">
+								<label class="col-6 col-form-label">Netmask</label>
+								<div class="col-6">
+									<input class="pca-net form-control" id='NETMASK' name="NETMASK" value='netmask_addr'
+										disabled>
+								</div>
+							</div>
+							<div class="row">
+								<label class="col-6 col-form-label">Gateway</label>
+								<div class="col-6">
+									<input class="pca-net form-control" id='GATEWAY' name="GATEWAY" value='gateway_addr'
+										disabled>
+								</div>
+							</div>
+
+							<div class="col text-center mt-3 mb-3">
+								<input class="pca-net btn btn-secondary" type="button"
+									onclick="toggleDisabled('pca-net')" value="Modify">
+								<input class="pca-net btn btn-primary" type="submit" onclick="toggleDisabled('pca-net')"
+									value="Submit" disabled>
+							</div>
+						</div>
+					</form>
+				</div>
+<!-- END NETWORK -->
+
+<!-- START DATE  -->
+				<div class="bg-primary text-white fs-4 fw-bold text-center">DATE/TIME</div>
+				<div>
+					<form method="post">
+						<div class="row">
+							<div class="row">
+								<label class="col-6 col-form-label">Date (dd/mm/yyyy)</label>
+								<div class="col-6">
+									<input class="pca-date form-control" text="date" id='DATE_VAL' name="DATE_VAL" value='Date'
+										disabled>
+								</div>
+							</div>
+							<div class="row">
+								<label class="col-6 col-form-label">Time 24hr(hh:mm:ss)</label>
+								<div class="col-6">
+									<input class="pca-date form-control" id='TIME_VAL' name="TIME_VAL" value='Time'
+										disabled>
+								</div>
+							</div>
+			
+
+							<div class="col text-center mt-3 mb-3">
+								<input class="pca-date btn btn-secondary" type="button"
+									onclick="toggleDisabled('pca-date')" value="Modify">
+								<input class="pca-date btn btn-primary" type="submit" onclick="toggleDisabled('pca-date')"
+									value="Submit" disabled>
+							</div>
+						</div>
+					</form>
+				</div>
+				
+<!-- END DATE -->
+			</div>
+
+
+		</div>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<script>
+
+		function toggleDisabled(myClass) {
+			$("." + myClass).prop('disabled', (i, v) => !v);
+		}
+
+		function connect() {
+			console.log("connecting")
+			var ws = new WebSocket("ws://localhost:8766/ws/");
+			ws.onopen = function () {
+				ws.send('SUB channel_a');
+				ws.send('SUB channel_b');
+				//var aaa = ws.send('GET channel_a');
+				//ws.send('GET GET aaa');
+				//console.log(aaa);
+			}
+			ws.onmessage = function (e) {
+				var messages = document.getElementById('messages'),
+					message = document.createElement('li'),
+					code = document.createElement('code')
+
+
+				var originalMsg = e.data;
+				//console.log(originalMsg);
+				var jsonMsg = JSON.parse(originalMsg);
+				var src_channel =  jsonMsg["source"]
+
+				var msg = jsonMsg["content"]["message"];
+				content = document.createTextNode(msg);
+
+
+				if (src_channel == "channel_a") {
+
+					var teemsg = document.getElementById("tee1");
+					if (msg != undefined) {
+						teemsg.innerHTML = msg + " mA" ;
+					}
+					else {
+						teemsg.innerHTML = "";
+					}
+				}
+				else if (src_channel == "channel_b") {
+					var teemsg = document.getElementById("tee2");
+					if (msg != undefined) {
+						teemsg.innerHTML = msg + " mA" ;
+					}
+					else {
+						teemsg.innerHTML = "";
+					}
+				}
+
+
+
+
+
+
+			};
+
+
+			ws.onclose = function (e) {
+				console.log(e);
+				console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+				setTimeout(function () {
+					connect();
+				}, 1000);
+			}
+		}
+
+		connect();
+
+
+
+	</script>
+
+
+
+
+
+
+</body>
+
+</html>

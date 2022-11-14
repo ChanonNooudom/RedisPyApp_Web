@@ -9,12 +9,12 @@ class PublishEverythingHandler(WebsocketHandler):
 
 
 WebsocketServer(
-    redis=from_url("redis://localhost:6379", encoding="utf-8", decode_responses=True),
+    redis=from_url("redis://localhost/:6379", encoding="utf-8", decode_responses=True),
     # read_timeout=30,
     # keep_alive_timeout=120,
     handler_class=PublishEverythingHandler,
 ).listen(
-    host='localhost',
+    host='0.0.0.0',
     port=8766,
-    channel_patterns=["channel_a"],
+    channel_patterns=["*"],
 )
